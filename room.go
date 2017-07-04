@@ -66,6 +66,15 @@ func (room *Room) FindById(c *mgo.Collection, id bson.ObjectId) error {
 	return nil
 }
 
+func (rooms Rooms) FindByUserId(c *mgo.Collection, id bson.ObjectId) (Rooms, error) {
+	defer dbutil.CloseSession(c)
+	err := c.Find(bson.M{"users": bson.M{"$in":[]bson.ObjectId{id}}}).All(&rooms)
+	if err != nil {
+		return rooms,err
+	}
+	return rooms, nil
+}
+
 func (rooms Rooms) FindAll(c *mgo.Collection) (Rooms, error) {
 	defer dbutil.CloseSession(c)
 	err := c.Find(bson.M{}).All(&rooms)

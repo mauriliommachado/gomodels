@@ -75,6 +75,15 @@ func (rooms Rooms) FindByUserId(c *mgo.Collection, id bson.ObjectId) (Rooms, err
 	return rooms, nil
 }
 
+func (room *Room) FindByTag(c *mgo.Collection, tag string) error {
+	defer dbutil.CloseSession(c)
+	err := c.Find(bson.M{"tag": tag}).One(&room)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (rooms Rooms) FindAll(c *mgo.Collection) (Rooms, error) {
 	defer dbutil.CloseSession(c)
 	err := c.Find(bson.M{}).All(&rooms)
